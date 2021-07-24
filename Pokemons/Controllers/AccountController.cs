@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pokemons.Data;
 using Pokemons.Models;
@@ -15,15 +16,19 @@ namespace Pokemons.Controllers
 	public class AccountController : Controller
 	{
 		private PokemonsContext _context;
-		public AccountController(PokemonsContext context)
+        private readonly UserManager<Customer> _userManager;
+        private readonly SignInManager<Customer> _signInManager;
+        public AccountController(PokemonsContext context, UserManager<Customer> userManager, SignInManager<Customer> signInManager)
 		{
 			_context = context;
-		}
+            _userManager = userManager;
+            _signInManager = signInManager;
+        }
 
         [HttpGet]
         public IActionResult Login(string url)
-        {
-            ViewBag.Url = url;
+        {            
+            ViewBag.Url = url;           
             return View();
         }     
         
@@ -35,17 +40,23 @@ namespace Pokemons.Controllers
             url = url ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-               Customer customer =  _context.Customer.FirstOrDefault(u => u.Email == model.Email && u.Password == model.Password);
-                if (customer != null)
-                {
-                    await Authenticate(customer); 
-
-                    if (Url.IsLocalUrl(url))
-                    {                       
-                        return Redirect(url);
+                var signedUser = await _userManager.FindByEmailAsync(model.Email);
+                if (signedUser != null)
+				{
+                    var result = await _signInManager.PasswordSignInAsync(signedUser.UserName, model.Password, true, false);
+                    if (result.Succeeded)
+                    {  
+                        if (Url.IsLocalUrl(url))
+                        {
+                            return Redirect(url);
+                        }
+                        else
+                        {
+                            return RedirectToAction("ListPokemons", "Home");
+                        }
                     }
-                }
-                ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                }               
+                ModelState.AddModelError("", "Пользователя с таким E-mail не сущетсвует");
             }
             ModelState.AddModelError("", "Некорректные логин и(или) пароль");
             return View(model);
@@ -64,22 +75,18 @@ namespace Pokemons.Controllers
             url = url ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                Customer customer = _context.Customer.FirstOrDefault(u => u.Email == model.Email);
-                if (customer == null)
+                Customer customer = new Customer
+                { 
+                    Email = model.Email, 
+                    UserName = model.Name,
+                    PhoneNumber = model.Phone,
+                    EmailConfirmed = true
+                };
+                var result = await _userManager.CreateAsync(customer, model.Password);
+                if (result.Succeeded)
                 {
-                    customer = new Customer 
-                    { 
-                        Name = model.Name, 
-                        Email = model.Email,
-                        Password = model.Password,
-                        ContactPhone = model.Phone 
-                    };
-                  
-                    _context.Customer.Add(customer);
-                    await _context.SaveChangesAsync();
-
-                    await Authenticate(customer); 
-
+                    await _signInManager.SignInAsync(customer, false);                   
+                   
                     if (Url.IsLocalUrl(url))
                     {
                         return Redirect(url);
@@ -87,30 +94,53 @@ namespace Pokemons.Controllers
                 }
                 else
                     ModelState.AddModelError("", "Некорректные логин и(или) пароль");
-            }
-            ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+            }           
 
             return View(model);
         }
 
-        private async Task Authenticate(Customer customer)
-        {           
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, customer.Email),
-                new Claim("Login", customer.Name)
-            };  
-            
-            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie");           
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
-        }
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()   
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await _signInManager.SignOutAsync();
             return RedirectToAction("ListPokemons","Home");
         }
 
-		
-	}
+        public IActionResult FacebookLogin(string url)
+        {
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { url = url });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Facebook", redirectUrl);
+            return Challenge(properties, "Facebook");
+        }
+
+        public async Task<IActionResult> ExternalLoginCallback(string url)
+        {
+            url = url ?? Url.Content("~/");
+            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+
+            if (result.Succeeded && Url.IsLocalUrl(url))
+            {
+                return Redirect(url);
+            }
+            else
+            {
+                Customer user = new Customer
+                {
+                    UserName = info.Principal.FindFirstValue(ClaimTypes.GivenName),
+                    Email = info.Principal.FindFirstValue(ClaimTypes.Email),
+                    EmailConfirmed = true, 
+                    PhoneNumber = info.Principal.FindFirstValue(ClaimTypes.MobilePhone)
+                };
+
+                await _userManager.CreateAsync(user);				
+                await _userManager.AddLoginAsync(user, info);
+                await _signInManager.SignInAsync(user, false);
+            }           
+            return Redirect(url);
+        }
+
+    }
+    
 }

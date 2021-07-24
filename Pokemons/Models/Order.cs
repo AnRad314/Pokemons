@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Pokemons.Models;
@@ -19,7 +20,8 @@ namespace Pokemons.Models
 		[DataType(DataType.Date)]
 		public DateTime DateOrder { get; set; } = DateTime.Today;
 
-		public int CustomerId { get; set; }
+		[ForeignKey("Id")]
+		public string CustomerId { get; set; }
 		public Customer Customer { get; set; }
 		public int PokemonId { get; set; }
 

@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication;
+using Pokemons.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Pokemons
 {
@@ -29,12 +31,24 @@ namespace Pokemons
 			
 			services.AddDbContext<PokemonsContext> (options =>
 			options.UseSqlServer(Configuration.GetConnectionString("PokemonsContext")));
-			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-			   .AddCookie(options => 
-			   {
-				   options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
-			   });
-			   services.AddControllersWithViews();
+
+			services.AddIdentity<Customer, IdentityRole>(opts =>
+			{
+				opts.Password.RequiredLength = 8;  
+				opts.Password.RequireNonAlphanumeric = false;  
+				opts.Password.RequireLowercase = false; 
+				opts.Password.RequireUppercase = false; 
+				opts.Password.RequireDigit = false; 
+				
+			}) 
+			  .AddEntityFrameworkStores<PokemonsContext>();
+
+			services.AddAuthentication().AddFacebook(options =>
+			{
+				options.AppId = "2916855048576720";
+				options.AppSecret = "231d69df5dadbed37dc067e7155ddfa5";
+			});
+			services.AddControllersWithViews();
 		}
 
 		

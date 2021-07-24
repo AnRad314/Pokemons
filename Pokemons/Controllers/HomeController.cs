@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Pokemons.Controllers
 {
@@ -19,10 +21,11 @@ namespace Pokemons.Controllers
 	public class HomeController : Controller
 	{		
 		private readonly PokemonsContext _context;
-
-		public HomeController(PokemonsContext context)
+		private readonly UserManager<Customer> _userManager;
+		public HomeController(PokemonsContext context, UserManager<Customer> userManager)
 		{
 			_context = context;
+			_userManager = userManager;
 		}
 
 		public IActionResult ListPokemons()
@@ -32,29 +35,23 @@ namespace Pokemons.Controllers
 		}
 
 		[Authorize]
-		public IActionResult OrderHistory()
+		public async Task<IActionResult> OrderHistory()
 		{
-			string email = User.Identity.Name;
-			Customer customer = _context.Customer.FirstOrDefault(e => e.Email == email);
-			var data = _context.Order.Where(c => c.CustomerId == customer.Id).Include(p => p.Pokemon); 
-			var data1 = _context.Order.Include(c => c.Customer).Include(p => p.Pokemon).GroupBy(p => p.Customer);
+			string name = User.Identity.Name;
+			var customer = await _userManager.FindByNameAsync(name);
+			var data = _context.Order.Where(c => c.CustomerId == customer.Id).Include(p => p.Pokemon);			
 			return View(data);
 		}
 
 		public IActionResult History()
 		{
-			//var TimeOrder = _context.Order.FirstOrDefault(r => r.Customer.Email == "B@b.ru").TimeOrder;
-			//var DataOrder = _context.Order.Include(p => p.Customer).LastOrDefault(r => r.Customer.Email == "B@B").DateOrder;
-
-
-
 			var historyOrders = _context.Order.Include(c => c.Customer).GroupBy(p => p.Customer.Email)
 				.Select(g => new ViewCustomerModel
 				{
-					Name = _context.Customer.FirstOrDefault(r => r.Email == g.Key).Name,
+					Name = _context.Order.FirstOrDefault(r => r.Customer.Email == g.Key).Customer.UserName,
 					TimeOrder = _context.Order.FirstOrDefault(r => r.Customer.Email == g.Key).TimeOrder,
-					DataOrder = _context.Order.FirstOrDefault(r => r.Customer.Email == g.Key).DateOrder,					
-					NumberOrder = g.Count() 
+					DataOrder = _context.Order.FirstOrDefault(r => r.Customer.Email == g.Key).DateOrder,
+					NumberOrder = g.Count()
 				}).ToList();
 
 			return View(historyOrders);
@@ -64,25 +61,27 @@ namespace Pokemons.Controllers
 		public IActionResult Order(int Id)
 		{
 			Pokemon pokemon = _context.Pokemon.FirstOrDefault(u => u.Id == Id);
-			if (pokemon!= null)
+			if (pokemon != null)
 			{
 				return View(pokemon);
 			}
 			return RedirectToAction(nameof(ListPokemons));
 		}
 
-		
-		public IActionResult RegisterOrder(int Id)
+
+		public async Task<IActionResult> RegisterOrder(int Id)
 		{
-			Order order = new Order();			
-			string email = User.Identity.Name;	
-			order.PokemonId = Id;			
-			Customer customer = _context.Customer.FirstOrDefault(e => e.Email == email);			
-			order.CustomerId = customer.Id;					
+			Order order = new Order();
+			string nameUser = User.Identity.Name;		
+			order.PokemonId = Id;
+			var customer = await _userManager.FindByNameAsync(nameUser);
+			order.CustomerId = customer.Id;
 			_context.Order.Add(order);
-			_context.SaveChanges();
+			await _context.SaveChangesAsync();
+
 			EmailService emailService = new EmailService();
 			emailService.SendEmail(customer.Email.ToString(), "Заказ покемона", "Вы оформили заказа на покемона " + _context.Pokemon.FirstOrDefault(e => e.Id == Id).Name);
+			
 			return RedirectToAction(nameof(History));
 		}
 

@@ -25,8 +25,10 @@ namespace Pokemons.ViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        [Required]
+        [Compare("Password", ErrorMessage = "Пароли не совпадают")]
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Пароль введен неверно")]
+        [Display(Name = "Подтвердить пароль")]
         public string ConfirmPassword { get; set; }
     }
 }

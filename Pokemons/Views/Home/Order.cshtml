@@ -5,7 +5,7 @@
 	<h1>
 		@if (User.Identity.IsAuthenticated)
 		{
-			<b> @User.FindFirst("Login").Value</b> 
+			<b> @User.Identity.Name</b> 
 		}
 		Вы выбрали Покемона  @Model.Name
 	</h1>

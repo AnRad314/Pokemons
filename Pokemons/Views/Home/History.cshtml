@@ -1,0 +1,59 @@
+﻿@model IEnumerable<ViewCustomerModel>
+
+
+<div class="text-center mb-2">
+	<h1>История заказов</h1>
+	@if (@Model.Count() == 0)
+	{
+		<h3>История заказов пуста</h3>
+		<h4>Оформите заказ первым </h4>
+	}
+	
+<div class="mt-4">
+	<table class="table table-hover">
+		<thead class="thead-dark">
+			<tr>
+				<th>
+					@Html.DisplayNameFor(item => item.TimeOrder)
+				</th>
+				<th>
+					@Html.DisplayNameFor(item => item.DataOrder)
+				</th>
+				<th>
+					@Html.DisplayNameFor(item => item.Name)
+				</th>
+				<th>
+					@Html.DisplayNameFor(item => item.NumberOrder)
+				</th>
+
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+
+			@foreach (var item in Model)
+			 {
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.TimeOrder)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.DataOrder)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Name)
+					</td>
+					<td>
+						заказал уже @Html.DisplayFor(modelItem => item.NumberOrder) раз
+					</td>
+				</tr>
+			 }
+
+		</tbody>
+	</table>
+			
+
+
+			<a class="btn btn-secondary" asp-action="ListPokemons" asp-controller="Home">К списку покемонов</a>
+		</div>
+	</div>

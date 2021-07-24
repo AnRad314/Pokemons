@@ -1,0 +1,29 @@
+﻿@model Pokemon
+
+
+<div class="justify-content-center">
+	<h1>
+		@if (User.Identity.IsAuthenticated)
+		{
+			<b> @User.FindFirst("Login").Value</b> 
+		}
+		Вы выбрали Покемона  @Model.Name
+	</h1>
+	<img class="img-thumbnail" alt="@Model.Name" src="@Model.Image" />
+	<div class="form-row  col-4 mt-3 justify-content-around">
+		@if (User.Identity.IsAuthenticated)
+		{
+			<a asp-action="RegisterOrder" asp-controller="Home" asp-route-id="@Model.Id" class="btn btn-outline-dark">Заказать покемона</a>
+		}
+		else
+		{
+			<p>Для заказа покемона требуется авторизация </p>			
+			<a asp-action="Login" asp-controller="Account" class="btn btn-outline-dark" asp-route-url="/Home/Order/@Model.Id">Войти</a>
+			<a asp-action="Register" asp-controller="Account" class="btn btn-outline-dark" asp-route-url="/Home/Order/@Model.Id">Регистрация</a>			
+		}	
+	<a class="btn btn-secondary" asp-action="ListPokemons" asp-controller="Home">Отмена</a>
+	</div>
+	
+</div>
+
+

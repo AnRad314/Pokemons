@@ -1,0 +1,20 @@
+﻿@model IEnumerable<Pokemon>
+
+<div class="text-center">
+	<h1 class="display-4"> Добро пожаловать в наш магазин</h1>
+	<h2> Выберите покемона</h2>
+</div>
+<div class="row mt-2 mb-2">
+	@foreach (var item in Model)
+	{
+		<div class="col-4">
+			<img class="img-thumbnail" alt="@item.Name" src="@item.Image" />		
+			<p> <b>Имя: @item.Name </b> </p>
+			<a asp-action="Order" class="btn btn-outline-dark" asp-controller="Home" asp-route-id=@item.Id> Выбрать </a>
+		</div>
+	}
+</div>
+
+
+
+

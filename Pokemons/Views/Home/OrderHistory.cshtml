@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Order>
+
+<div class="text-center mb-2">
+	<h2>История ваших заказов</h2>
+	<div class="mt-3">
+		<h4><b> @User.FindFirst("Login").Value </b> заказал уже @Model.Count() покемонов. </h4>
+	</div>
+</div>
+<div class="mt-4">
+	<table class="table">
+		<thead class="thead-dark">
+			<tr>
+				<th>
+					@Html.DisplayNameFor(model => model.TimeOrder)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.DateOrder)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Pokemon)
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.TimeOrder)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.DateOrder)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Pokemon.Name)
+					</td>
+				</tr>
+			}
+
+		</tbody>
+	</table>
+	<a class="btn btn-secondary" asp-action="ListPokemons" asp-controller="Home">К списку покемонов</a>
+</div>

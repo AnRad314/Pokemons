@@ -11,13 +11,13 @@ namespace Pokemons.Models
 	public class Order
 	{
 		public int Id { get; set; }
-		[Display(Name = "Время заказа")]
-		[DataType(DataType.Time)]
 
+		[DataType(DataType.Time)]
+		[Display(Name = "Время заказа")]		
 		public DateTime TimeOrder { get; set; } = DateTime.Now;
 
-		[Display(Name = "Дата заказа")]
 		[DataType(DataType.Date)]
+		[Display(Name = "Дата заказа")]		
 		public DateTime DateOrder { get; set; } = DateTime.Today;
 
 		[ForeignKey("Id")]

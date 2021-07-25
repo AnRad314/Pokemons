@@ -56,7 +56,7 @@ namespace Pokemons.Controllers
                         }
                     }
                 }               
-                ModelState.AddModelError("", "Пользователя с таким E-mail не сущетсвует");
+                ModelState.AddModelError("", "Некорректные логин и(или) пароль");
             }
             ModelState.AddModelError("", "Некорректные логин и(или) пароль");
             return View(model);

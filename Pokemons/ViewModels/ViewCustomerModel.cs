@@ -19,7 +19,5 @@ namespace Pokemons.ViewModels
 		[Display(Name = "Имя заказчика")]
 		public string Name { get; set; }
 		public int NumberOrder { get; set; }
-		
-
 	}
 }

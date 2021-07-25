@@ -10,51 +10,50 @@
 </head>
 <body>
 	<header>
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-			<div class="container">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light bg-white border-bottom box-shadow mb-3">			
 				<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="ListPokemons">
-					<img src="~/img/pokemon_icon.jpg" width="30" height="30" class="d-inline-block align-top">
+					<img src="~/img/pokemon_icon.jpg" width="25" height="25" class="d-inline-block align-top">
 					Покемоны
 				</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse d-sm-inline-flex flex-sm-row-reverse " id="navbarText">
+					@if (User.Identity.IsAuthenticated)
+					{
+						<form class="form-inline my-2 my-lg-0" method="post" asp-controller="Account" asp-action="Logout">
+							<label class="mr-3"><b>@User.Identity.Name</b></label>
+							<input type="submit" value="Выход" class="btn btn-warning mr-3" />
+						</form>
+					}
+					else
+					{
+						<form class="form-inline my-2 my-lg-0" method="get" asp-action="Register" asp-controller="Account">
+							<button class="btn btn-outline-info my-2 my-sm-0 mr-1" type="submit">Регистрация</button>
+						</form>
+						<form class="form-inline my-2 my-lg-0" method="get" asp-action="Login" asp-controller="Account">
+							<button class="btn btn-outline-success my-2 my-sm-0 mr-5" type="submit">Вход</button>
+						</form>
+					}
+					<div class="navbar-nav flex-grow-1">
+						<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+							<li class="nav-item">
+								<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListPokemons">Покемоны</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="History">История заказов</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="OrderHistory">Ваша история заказов</a>
+							</li>
+						</ul>
 
-				<div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-					<ul class="navbar-nav flex-grow-1">
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListPokemons">Покемоны</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="History">История заказов</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="OrderHistory">Ваша история заказов</a>
-						</li>
-					</ul>
+
+					</div>
 				</div>
-			</div>
-			<div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse d-flex ">
-				@if (User.Identity.IsAuthenticated)
-				{
-					<form method="post" asp-controller="Account" asp-action="Logout">
-						<label class="mr-3"><b>@User.Identity.Name</b></label>
-						<input type="submit" value="Выход" class="btn btn-warning mr-3" />
-					</form>
-				}
-				else
-				{
-					<ul class="navbar-nav mr-5 align-items-end">
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Вход </a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Регистрация</a>
-						</li>
-					</ul>
-				}
-
-			</div>
-
 		</nav>
 	</header>
+
 	<div class="container">
 		<main role="main" class="pb-3">
 			@RenderBody()

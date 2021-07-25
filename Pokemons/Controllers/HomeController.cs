@@ -28,7 +28,6 @@ namespace Pokemons.Controllers
 			_context = context;
 			_userManager = userManager;
 		}
-
 		public IActionResult ListPokemons()
 		{	
 			var pokemons = _context.Pokemon.ToList();
@@ -47,7 +46,7 @@ namespace Pokemons.Controllers
 		public IActionResult History()
 		{
 			var historyOrders = _context.Order.Include(c => c.Customer).GroupBy(p => p.Customer.Email)
-				.Select(g => new ViewCustomerModel
+				.Select(g => new CustomerViewModel
 				{
 					Name = _context.Order.FirstOrDefault(r => r.Customer.Email == g.Key).Customer.UserName,
 					TimeOrder = _context.Order.FirstOrDefault(r => r.Customer.Email == g.Key).TimeOrder,
@@ -59,9 +58,9 @@ namespace Pokemons.Controllers
 		}
 
 
-		public IActionResult Order(int Id)
+		public IActionResult Order(int id)
 		{
-			Pokemon pokemon = _context.Pokemon.FirstOrDefault(u => u.Id == Id);
+			Pokemon pokemon = _context.Pokemon.FirstOrDefault(u => u.Id == id);
 			if (pokemon != null)
 			{
 				return View(pokemon);
@@ -69,23 +68,21 @@ namespace Pokemons.Controllers
 			return RedirectToAction(nameof(ListPokemons));
 		}
 
-
-		public async Task<IActionResult> RegisterOrder(int Id)
+		public async Task<IActionResult> RegisterOrder(int id)
 		{
 			Order order = new Order();
 			string nameUser = User.Identity.Name;		
-			order.PokemonId = Id;
+			order.PokemonId = id;
 			var customer = await _userManager.FindByNameAsync(nameUser);
 			order.CustomerId = customer.Id;
 			_context.Order.Add(order);
 			await _context.SaveChangesAsync();
-
+			
 			EmailService emailService = new EmailService();
-			emailService.SendEmail(customer.Email.ToString(), "Заказ покемона", "Вы оформили заказа на покемона " + _context.Pokemon.FirstOrDefault(e => e.Id == Id).Name);
+			emailService.SendEmail(customer.Email.ToString(), "Заказ покемона", "Вы оформили заказа на покемона " + _context.Pokemon.FirstOrDefault(e => e.Id == id)?.Name);
 			
 			return RedirectToAction(nameof(History));
 		}
-
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()

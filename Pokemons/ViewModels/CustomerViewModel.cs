@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Pokemons.ViewModels
 {
-	public class ViewCustomerModel
+	public class CustomerViewModel
 	{	
 		[Display(Name = "Время последнего заказа")]
 		[DataType(DataType.Time)]

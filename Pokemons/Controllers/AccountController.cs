@@ -30,8 +30,7 @@ namespace Pokemons.Controllers
         {            
             ViewBag.Url = url;           
             return View();
-        }     
-        
+        }             
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -94,8 +93,7 @@ namespace Pokemons.Controllers
                 }
                 else
                     ModelState.AddModelError("", "Некорректные логин и(или) пароль");
-            }           
-
+            }  
             return View(model);
         }
 

@@ -8,8 +8,10 @@
 	<div>
 		<div class="form-row col-6 mt-1">
 			<label asp-for="Name"> Имя </label><br />
-			<input type="text" asp-for="Name" class="form-control" placeholder="Введите Имя" />
+			<input type="text" asp-for="Name" class="form-control" placeholder="Введите Имя" />	
 			<span asp-validation-for="Name" class="text-danger" />
+			<small class="text-muted" >Имя должно состоять из латинских букв и/или цифр </small>
+			
 		</div>
 		<div class="form-row col-6 mt-1">
 			<label asp-for="Email">Email</label><br />
@@ -20,6 +22,7 @@
 			<label asp-for="Phone"> Телефон</label><br />
 			<input type="tel" asp-for="Phone" class="form-control" placeholder="Введите номер телефона" />
 			<span asp-validation-for="Phone" class="text-danger" />
+			<small class="text-muted">Введите номер телефона с кодом оператора</small>
 		</div>
 		<div class="form-row col-6 mt-1">
 			<label asp-for="Password">Пароль</label><br />

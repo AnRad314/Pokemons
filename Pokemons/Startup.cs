@@ -43,11 +43,17 @@ namespace Pokemons
 			}) 
 			  .AddEntityFrameworkStores<PokemonsContext>();
 
-			services.AddAuthentication().AddFacebook(options =>
-			{
-				options.AppId = "2916855048576720";
-				options.AppSecret = "231d69df5dadbed37dc067e7155ddfa5";
-			});
+			services.AddAuthentication()
+				.AddFacebook(options =>
+				{
+					options.AppId = "2916855048576720";
+					options.AppSecret = "231d69df5dadbed37dc067e7155ddfa5";
+				})
+				.AddGoogle(options =>
+				{
+					options.ClientId = "206798487298-6k8k15gjfvq8ahlf1tcbq55lncido5uq.apps.googleusercontent.com";
+					options.ClientSecret = "qJ_XZU2De4YqUxhKP6z_k8c3";
+				});
 			services.AddControllersWithViews();
 		}
 

@@ -107,11 +107,11 @@ namespace Pokemons.Controllers
             return RedirectToAction("ListPokemons","Home");
         }
 
-        public IActionResult FacebookLogin(string url)
+        public IActionResult ExternalAuthentication(string url, string provider)
         {
             var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { url = url });
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Facebook", redirectUrl);
-            return Challenge(properties, "Facebook");
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return Challenge(properties, provider);
         }
 
         public async Task<IActionResult> ExternalLoginCallback(string url)

@@ -30,9 +30,10 @@
 	<div class="col-md-4 col-md-offset-2">
 		<h4> Используйте другой сервис для входа в систему.</h4>
 		<hr />
-		<form asp-action="FacebookLogin" asp-controller="Account" method="post" class="form-horizontal" asp-route-url="@ViewBag.Url">
+		<form asp-action="ExternalAuthentication" asp-controller="Account" method="post" class="form-horizontal" asp-route-url="@ViewBag.Url">
 			<div>
-				<button type="submit" class="btn btn-primary" name="provider" value="Facebook" title="Log in using your  account">Facebook</button>
+				<button type="submit" class="btn btn-primary mr-5" name="provider" value="Facebook">Facebook</button>
+				<button type="submit" class="btn btn-primary mr-5" name="provider" value="Google">Google</button>
 			</div>
 		</form>
 	</div>

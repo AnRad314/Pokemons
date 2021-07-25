@@ -18,6 +18,8 @@ namespace Pokemons.ViewModels
 
 		[Display(Name = "Имя заказчика")]
 		public string Name { get; set; }
+
+		[Display(Name = "Количество заказов")]
 		public int NumberOrder { get; set; }
 	}
 }

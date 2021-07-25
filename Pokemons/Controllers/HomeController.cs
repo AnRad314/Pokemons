@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Pokemons.ViewModels;
 
 namespace Pokemons.Controllers
 {

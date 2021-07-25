@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Pokemons.Models
+namespace Pokemons.ViewModels
 {
 	public class ViewCustomerModel
-	{
+	{	
 		[Display(Name = "Время последнего заказа")]
 		[DataType(DataType.Time)]
 		public DateTime TimeOrder { get; set; }
@@ -19,5 +19,7 @@ namespace Pokemons.Models
 		[Display(Name = "Имя заказчика")]
 		public string Name { get; set; }
 		public int NumberOrder { get; set; }
+		
+
 	}
 }

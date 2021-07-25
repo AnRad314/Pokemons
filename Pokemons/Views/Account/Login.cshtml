@@ -31,9 +31,15 @@
 		<h4> Используйте другой сервис для входа в систему.</h4>
 		<hr />
 		<form asp-action="ExternalAuthentication" asp-controller="Account" method="post" class="form-horizontal" asp-route-url="@ViewBag.Url">
-			<div>
-				<button type="submit" class="btn btn-primary mr-5" name="provider" value="Facebook">Facebook</button>
-				<button type="submit" class="btn btn-primary mr-5" name="provider" value="Google">Google</button>
+			<div >
+				<button type="submit" class="btn btn-light mr-5" name="provider" value="Facebook">
+					<img src="~/img/logoAuthentication/Facebook.png" width="25" height="25" class="d-inline-block align-top">
+					Facebook
+				</button>
+				<button type="submit" class="btn btn-light mr-5" name="provider" value="Google">
+					<img src="~/img/logoAuthentication/Google.png" width="25" height="25" class="d-inline-block align-top" >
+					Google
+				</button>
 			</div>
 		</form>
 	</div>

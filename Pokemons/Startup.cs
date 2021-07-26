@@ -46,8 +46,8 @@ namespace Pokemons
 			services.AddAuthentication()
 				.AddFacebook(options =>
 				{
-					options.AppId = "2916855048576720";
-					options.AppSecret = "231d69df5dadbed37dc067e7155ddfa5";
+					options.AppId = Configuration["Authentication:Facebook:AppId"];
+					options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
 				})
 				.AddGoogle(options =>
 				{

@@ -51,8 +51,8 @@ namespace Pokemons
 				})
 				.AddGoogle(options =>
 				{
-					options.ClientId = "206798487298 - 6k8k15gjfvq8ahlf1tcbq55lncido5uq.apps.googleusercontent.com";
-					options.ClientSecret = "qJ_XZU2De4YqUxhKP6z_k8c3";
+					options.ClientId = Configuration["Authentication:Google:ClientId"];
+					options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
 				});
 			services.AddControllersWithViews();
 		}
